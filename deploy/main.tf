@@ -48,7 +48,7 @@ module "nginx" {
           apiVersion: v1
           kind: Service
           metadata:
-            labels:
+            annotations:
               service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
             name: ingress-nginx-controller
             namespace: ingress-nginx
