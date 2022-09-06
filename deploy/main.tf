@@ -6,9 +6,9 @@ terraform {
     }
   }
   required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "2.13.1"
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
     }
     kustomization = {
       source  = "kbst/kustomization"
@@ -17,14 +17,17 @@ terraform {
   }
 }
 
-provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  config_context = "my-context"
+provider "digitalocean" {
+  token = var.do_token
+}
+
+data "digitalocean_kubernetes_cluster" "dikurium_kube_cluster" {
+  name = var.dikurium_k8s_cluster_name_all
 }
 
 provider "kustomization" {
-  alias           = "local_kube"
-  kubeconfig_path = "~/.kube/config"
+  alias          = "local_kube"
+  kubeconfig_raw = data.digitalocean_kubernetes_cluster.dikurium_kube_cluster.kube_config[0].raw_config
 }
 
 module "nginx" {
@@ -52,10 +55,10 @@ module "nginx" {
         EOF
 
           target = {
-            group     = ""
-            version   = "v1"
-            kind      = "Service"
-            name      = "ingress-nginx-controller"
+            group   = ""
+            version = "v1"
+            kind    = "Service"
+            name    = "ingress-nginx-controller"
           }
         }
       ]
