@@ -50,6 +50,7 @@ module "nginx" {
           metadata:
             annotations:
               service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
+              service.beta.kubernetes.io/do-loadbalancer-hostname: dikurium.ch
             name: ingress-nginx-controller
             namespace: ingress-nginx
         EOF
