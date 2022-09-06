@@ -40,7 +40,7 @@ module "nginx" {
           kind: Service
           metadata:
             labels:
-              service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.example.com
+              service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
             name: ingress-nginx-controller
             namespace: ingress-nginx
         EOF
