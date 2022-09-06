@@ -1,4 +1,10 @@
 terraform {
+  cloud {
+    organization = "Dikurium_Swiss_Consulting"
+    workspaces {
+      name = "ingress-nginx-cert-manager"
+    }
+  }
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -40,7 +46,7 @@ module "nginx" {
           kind: Service
           metadata:
             labels:
-              service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.example.com
+              service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
             name: ingress-nginx-controller
             namespace: ingress-nginx
         EOF
