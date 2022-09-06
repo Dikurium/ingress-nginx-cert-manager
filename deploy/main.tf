@@ -38,9 +38,9 @@ module "nginx" {
   source  = "kbst.xyz/catalog/nginx/kustomization"
   version = "1.2.1-kbst.0"
 
-  configuration_base_key = "default"
+  configuration_base_key = "ingress-nginx-cert-manager"
   configuration = {
-    default = {
+    ingress-nginx-cert-manager = {
       namespace = "nginx-ingress"
       patches = [
         {
@@ -74,9 +74,9 @@ module "cert_manager" {
   source  = "kbst.xyz/catalog/cert-manager/kustomization"
   version = "1.8.2-kbst.0"
 
-  configuration_base_key = "default"
+  configuration_base_key = "ingress-nginx-cert-manager"
   configuration = {
-    default = {
+    ingress-nginx-cert-manager = {
       additional_resources = ["${path.root}/manifests/cluster-issuer.yaml"]
     }
     ops = {
