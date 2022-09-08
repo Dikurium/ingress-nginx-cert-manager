@@ -17,6 +17,10 @@ terraform {
   }
 }
 
+locals {
+  domain = "dikurium.ch"
+}
+
 provider "digitalocean" {
   token = var.do_token
 }
@@ -99,4 +103,13 @@ module "cert_manager" {
       ]
     }
   }
+}
+
+data "digitalocean_loadbalancer" "nginx-ingress-controller" {
+  name = "nginx-ingress-controller.service.dikurium.ch"
+}
+
+resource "digitalocean_domain" "dikurium" {
+  name       = local.domain
+  ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
