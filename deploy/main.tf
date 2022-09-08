@@ -18,7 +18,8 @@ terraform {
 }
 
 locals {
-  domain = "dikurium.ch"
+  domain          = "dikurium.ch"
+  workaround_fqdn = "workaround.dikurium.ch"
 }
 
 provider "digitalocean" {
@@ -54,7 +55,7 @@ module "nginx" {
           metadata:
             annotations:
               service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
-              service.beta.kubernetes.io/do-loadbalancer-hostname: ${local.domain}
+              service.beta.kubernetes.io/do-loadbalancer-hostname: ${local.workaround_fqdn}
             name: ingress-nginx-controller
             namespace: ingress-nginx
         EOF
@@ -110,6 +111,27 @@ data "digitalocean_loadbalancer" "nginx-ingress-controller" {
 }
 
 resource "digitalocean_domain" "dikurium" {
-  name       = "@"
+  name       = local.domain
   ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
+}
+
+resource "digitalocean_record" "root" {
+  domain = digitalocean_domain.dikurium.id
+  type   = "A"
+  name   = "@"
+  value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
+}
+
+resource "digitalocean_record" "www" {
+  domain = digitalocean_domain.dikurium.id
+  type   = "A"
+  name   = "@"
+  value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
+}
+
+resource "digitalocean_record" "workaround" {
+  domain = digitalocean_domain.dikurium.id
+  type   = "A"
+  name   = "workaround"
+  value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
