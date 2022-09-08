@@ -54,7 +54,7 @@ module "nginx" {
           metadata:
             annotations:
               service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
-              service.beta.kubernetes.io/do-loadbalancer-hostname: dikurium.ch
+              service.beta.kubernetes.io/do-loadbalancer-hostname: ${local.domain}
             name: ingress-nginx-controller
             namespace: ingress-nginx
         EOF
@@ -110,6 +110,6 @@ data "digitalocean_loadbalancer" "nginx-ingress-controller" {
 }
 
 resource "digitalocean_domain" "dikurium" {
-  name       = local.domain
+  name       = "@"
   ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
