@@ -115,17 +115,10 @@ resource "digitalocean_domain" "dikurium" {
   ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 
-resource "digitalocean_record" "root" {
-  domain = digitalocean_domain.dikurium.id
-  type   = "A"
-  name   = "@"
-  value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
-}
-
 resource "digitalocean_record" "www" {
   domain = digitalocean_domain.dikurium.id
   type   = "A"
-  name   = "@"
+  name   = "www"
   value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 
