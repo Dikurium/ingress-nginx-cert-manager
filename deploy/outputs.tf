@@ -3,7 +3,7 @@ output "nginx-ingress-controller-ip" {
 }
 
 output "root_fqdn" {
-  value = digitalocean_record.root.fqdn
+  value = digitalocean_domain.dikurium.name
 }
 
 output "www_fqdn" {
