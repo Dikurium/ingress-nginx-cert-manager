@@ -1,10 +1,4 @@
 terraform {
-  cloud {
-    organization = "Dikurium_Swiss_Consulting"
-    workspaces {
-      name = "ingress-nginx-cert-manager"
-    }
-  }
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
@@ -26,9 +20,9 @@ module "nginx" {
   source  = "kbst.xyz/catalog/nginx/kustomization"
   version = "1.2.1-kbst.0"
 
-  configuration_base_key = "ingress-nginx-cert-manager"
+  configuration_base_key = var.workspace
   configuration = {
-    ingress-nginx-cert-manager = {
+    "${var.workspace}" = {
       namespace = "nginx-ingress"
       patches = [
         {
@@ -59,9 +53,9 @@ module "cert_manager" {
   source  = "kbst.xyz/catalog/cert-manager/kustomization"
   version = "1.8.2-kbst.0"
 
-  configuration_base_key = "ingress-nginx-cert-manager"
+  configuration_base_key = var.workspace
   configuration = {
-    ingress-nginx-cert-manager = {
+    "${var.workspace}" = {
       additional_resources = ["${path.root}/manifests/cluster-issuer.yaml"]
     }
     ops = {
@@ -87,6 +81,9 @@ module "cert_manager" {
 
 data "digitalocean_loadbalancer" "nginx-ingress-controller" {
   name = local.nginx_controller_service_name
+  depends_on = [
+    module.nginx
+  ]
 }
 
 resource "digitalocean_domain" "domain" {
