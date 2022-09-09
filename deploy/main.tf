@@ -90,7 +90,7 @@ data "digitalocean_loadbalancer" "nginx-ingress-controller" {
 }
 
 resource "digitalocean_domain" "domain" {
-  name       = local.domain
+  name       = var.domain
   ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 

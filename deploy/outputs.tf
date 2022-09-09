@@ -10,16 +10,16 @@ output "nginx_ingress_controller_ip" {
 
 output "domain_id" {
   description = "ID of the domain created in DigitalOcean"
-  value       = digitalocean_domain.dikurium.id
+  value       = digitalocean_domain.domain.id
 }
 
 output "root_fqdn" {
-  description = "Root Dikurium FQDN"
-  value       = digitalocean_domain.dikurium.name
+  description = "Root FQDN"
+  value       = digitalocean_domain.domain.name
 }
 
 output "www_fqdn" {
-  description = "www Dikurium FQDN"
+  description = "www FQDN"
   value       = digitalocean_record.www.fqdn
 }
 
