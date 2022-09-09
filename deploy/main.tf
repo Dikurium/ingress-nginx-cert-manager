@@ -18,28 +18,11 @@ terraform {
 }
 
 locals {
-  domain          = "dikurium.ch"
-  workaround_fqdn = "workaround.dikurium.ch"
-}
-
-provider "digitalocean" {
-  token = var.do_token
-}
-
-data "digitalocean_kubernetes_cluster" "dikurium_kube_cluster" {
-  name = var.dikurium_k8s_cluster_name_all
-}
-
-provider "kustomization" {
-  alias          = "local_kube"
-  kubeconfig_raw = data.digitalocean_kubernetes_cluster.dikurium_kube_cluster.kube_config[0].raw_config
+  workaround_fqdn               = "workaround.${var.domain}"
+  nginx_controller_service_name = "nginx-ingress-controller.service.${var.domain}"
 }
 
 module "nginx" {
-  providers = {
-    kustomization = kustomization.local_kube
-  }
-
   source  = "kbst.xyz/catalog/nginx/kustomization"
   version = "1.2.1-kbst.0"
 
@@ -54,7 +37,7 @@ module "nginx" {
           kind: Service
           metadata:
             annotations:
-              service.beta.kubernetes.io/do-loadbalancer-name: nginx-ingress-controller.service.dikurium.ch
+              service.beta.kubernetes.io/do-loadbalancer-name: ${local.nginx_controller_service_name}
               service.beta.kubernetes.io/do-loadbalancer-hostname: ${local.workaround_fqdn}
             name: ingress-nginx-controller
             namespace: ingress-nginx
@@ -73,10 +56,6 @@ module "nginx" {
 }
 
 module "cert_manager" {
-  providers = {
-    kustomization = kustomization.local_kube
-  }
-
   source  = "kbst.xyz/catalog/cert-manager/kustomization"
   version = "1.8.2-kbst.0"
 
@@ -107,23 +86,23 @@ module "cert_manager" {
 }
 
 data "digitalocean_loadbalancer" "nginx-ingress-controller" {
-  name = "nginx-ingress-controller.service.dikurium.ch"
+  name = local.nginx_controller_service_name
 }
 
-resource "digitalocean_domain" "dikurium" {
+resource "digitalocean_domain" "domain" {
   name       = local.domain
   ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 
 resource "digitalocean_record" "www" {
-  domain = digitalocean_domain.dikurium.id
+  domain = digitalocean_domain.domain.id
   type   = "A"
   name   = "www"
   value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 
 resource "digitalocean_record" "workaround" {
-  domain = digitalocean_domain.dikurium.id
+  domain = digitalocean_domain.domain.id
   type   = "A"
   name   = "workaround"
   value  = data.digitalocean_loadbalancer.nginx-ingress-controller.ip

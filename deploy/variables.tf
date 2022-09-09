@@ -9,3 +9,8 @@ variable "dikurium_k8s_cluster_name_all" {
   default     = "k8s-dik-all"
   type        = string
 }
+
+variable "domain" {
+  description = "Root domain for Ingress configuration"
+  type        = string
+}
