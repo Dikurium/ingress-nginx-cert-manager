@@ -13,3 +13,8 @@ variable "domain" {
   description = "Root domain for Ingress configuration"
   type        = string
 }
+
+variable "cert_manager_additional_resources" {
+  description = "Additional resources to add to the Cert-Manager deployment, such as a ClusterIssuer"
+  type        = list(string)
+}

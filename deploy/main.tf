@@ -56,7 +56,7 @@ module "cert_manager" {
   configuration_base_key = var.workspace
   configuration = {
     "${var.workspace}" = {
-      additional_resources = ["${path.root}/manifests/cluster-issuer.yaml"]
+      additional_resources = [var.cert_manager_additional_resources]
     }
     ops = {
       patches = [
