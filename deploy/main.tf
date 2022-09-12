@@ -36,7 +36,21 @@ module "nginx" {
             name: ingress-nginx-controller
             namespace: ingress-nginx
             spec:
-              externalTrafficPolicy: Cluster
+
+        EOF
+
+          target = {
+            group   = ""
+            version = "v1"
+            kind    = "Service"
+            name    = "ingress-nginx-controller"
+          }
+        },
+        {
+          patch = <<-EOF
+          - op: replace
+            path: /spec/externalTrafficPolicy
+            value: Cluster
         EOF
 
           target = {
