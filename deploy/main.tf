@@ -79,10 +79,17 @@ module "cert_manager" {
   }
 }
 
+resource "time_sleep" "wait_for_loadbalancer" {
+  depends_on = [
+    module.nginx
+  ]
+  create_duration = "30s"
+}
+
 data "digitalocean_loadbalancer" "nginx-ingress-controller" {
   name = local.nginx_controller_service_name
   depends_on = [
-    module.nginx
+    time_sleep.wait_for_loadbalancer
   ]
 }
 
