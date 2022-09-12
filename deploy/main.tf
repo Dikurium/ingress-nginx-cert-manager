@@ -35,6 +35,8 @@ module "nginx" {
               service.beta.kubernetes.io/do-loadbalancer-hostname: ${local.workaround_fqdn}
             name: ingress-nginx-controller
             namespace: ingress-nginx
+            spec:
+              externalTrafficPolicy: Cluster
         EOF
 
           target = {
