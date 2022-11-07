@@ -93,6 +93,14 @@ module "cert_manager" {
   }
 }
 
+resource "helm_release" "cert_manager_csi" {
+  name       = "cert_manager_csi"
+  repository = "https://charts.jetstack.io/jetstack/"
+  chart      = "cert-manager-csi-driver"
+  version    = "4.0.2"
+  namespace  = "cert-manager"
+}
+
 resource "time_sleep" "wait_for_loadbalancer" {
   depends_on = [
     module.nginx
