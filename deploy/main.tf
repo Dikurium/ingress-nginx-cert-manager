@@ -97,7 +97,7 @@ resource "helm_release" "cert_manager_csi" {
   name       = "cert_manager_csi"
   repository = "https://charts.jetstack.io/"
   chart      = "cert-manager-csi-driver"
-  version    = "4.0.2"
+  version    = "0.4.2"
   namespace  = "cert-manager"
 }
 
