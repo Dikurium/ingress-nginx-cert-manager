@@ -115,6 +115,13 @@ resource "helm_release" "cert_manager_csi" {
   repository = "https://charts.jetstack.io/"
   chart      = "cert-manager-csi-driver"
   version    = "0.4.2"
+
+  values = [<<EOT
+      nodeSelector:
+        service: "core"
+        priority: "high"
+      EOT
+  ]
 }
 
 resource "time_sleep" "wait_for_loadbalancer" {
