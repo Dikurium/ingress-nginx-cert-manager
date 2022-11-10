@@ -8,6 +8,10 @@ terraform {
       source  = "kbst/kustomization"
       version = "0.9.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.6.0"
+    }
   }
 }
 
@@ -95,10 +99,10 @@ module "cert_manager" {
 
 resource "helm_release" "cert_manager_csi" {
   name       = "cert_manager_csi"
+  namespace  = "cert-manager"
   repository = "https://charts.jetstack.io/"
   chart      = "cert-manager-csi-driver"
   version    = "0.4.2"
-  namespace  = "cert-manager"
 }
 
 resource "time_sleep" "wait_for_loadbalancer" {
