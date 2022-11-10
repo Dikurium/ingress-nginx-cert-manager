@@ -15,6 +15,10 @@ terraform {
   }
 }
 
+data "digitalocean_kubernetes_cluster" "dikurium_kube_cluster" {
+  name = var.dikurium_k8s_cluster_name_all
+}
+
 locals {
   workaround_fqdn               = "workaround.${var.domain}"
   nginx_controller_service_name = "nginx-ingress-controller.service.${var.domain}"
