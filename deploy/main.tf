@@ -118,7 +118,7 @@ resource "helm_release" "cert_manager_csi" {
 
   values = [<<EOT
       nodeSelector:
-        service: "core"
+        service: "main"
         priority: "high"
       EOT
   ]
