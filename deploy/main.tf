@@ -1,4 +1,10 @@
 terraform {
+  cloud {
+    organization = "Dikurium_Swiss_Consulting"
+    workspaces {
+      name = "dikurium-ingress-nginx-cert-manager"
+    }
+  }
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
@@ -15,6 +21,11 @@ terraform {
   }
 }
 
+# Configure the DigitalOcean Provider
+provider "digitalocean" {
+  token = var.do_token
+}
+
 data "digitalocean_kubernetes_cluster" "dikurium_kube_cluster" {
   name = var.dikurium_k8s_cluster_name_all
 }
@@ -22,6 +33,10 @@ data "digitalocean_kubernetes_cluster" "dikurium_kube_cluster" {
 locals {
   workaround_fqdn               = "workaround.${var.domain}"
   nginx_controller_service_name = "nginx-ingress-controller.service.${var.domain}"
+}
+
+provider "kustomization" {
+  kubeconfig_raw = data.digitalocean_kubernetes_cluster.dikurium_kube_cluster.kube_config[0].raw_config
 }
 
 provider "helm" {
@@ -36,9 +51,9 @@ module "nginx" {
   source  = "kbst.xyz/catalog/nginx/kustomization"
   version = "1.2.1-kbst.0"
 
-  configuration_base_key = var.workspace
+  configuration_base_key = terraform.workspace
   configuration = {
-    "${var.workspace}" = {
+    "${terraform.workspace}" = {
       namespace = "nginx-ingress"
       patches = [
         {
@@ -83,10 +98,13 @@ module "cert_manager" {
   source  = "kbst.xyz/catalog/cert-manager/kustomization"
   version = "1.8.2-kbst.0"
 
-  configuration_base_key = var.workspace
+  configuration_base_key = terraform.workspace
   configuration = {
-    "${var.workspace}" = {
-      additional_resources = var.cert_manager_additional_resources
+    "${terraform.workspace}" = {
+      additional_resources = [
+        "${path.root}/manifests/cluster-issuer.yaml",
+        "${path.root}/manifests/fundp-cluster-issuer.yaml"
+      ]
     }
     ops = {
       patches = [
@@ -116,12 +134,12 @@ resource "helm_release" "cert_manager_csi" {
   chart      = "cert-manager-csi-driver"
   version    = "0.4.2"
 
-  values = [<<EOT
-      nodeSelector:
-        service: "main"
-        priority: "high"
-      EOT
-  ]
+  values = [yamlencode({
+    nodeSelector = {
+      service  = "main"
+      priority = "high"
+    }
+  })]
 }
 
 resource "time_sleep" "wait_for_loadbalancer" {
@@ -139,8 +157,8 @@ data "digitalocean_loadbalancer" "nginx-ingress-controller" {
 }
 
 resource "digitalocean_domain" "domain" {
-  name       = var.domain
-  ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
+  name = var.domain
+  # ip_address = data.digitalocean_loadbalancer.nginx-ingress-controller.ip
 }
 
 resource "digitalocean_record" "www" {
