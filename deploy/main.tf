@@ -93,7 +93,7 @@ module "nginx" {
           patch = yamlencode([
             {
               op   = "add"
-              path = "data"
+              path = "/data"
               value = {
                 "use-http2" = true
               }
