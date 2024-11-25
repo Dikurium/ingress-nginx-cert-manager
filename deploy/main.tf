@@ -88,6 +88,24 @@ module "nginx" {
             kind    = "Service"
             name    = "ingress-nginx-controller"
           }
+        },
+        {
+          patch = yamlencode([
+            {
+              op   = "add"
+              path = "data"
+              value = {
+                "use-http2" = true
+              }
+            }
+          ])
+
+          target = {
+            group   = ""
+            version = "v1"
+            kind    = "ConfigMap"
+            name    = "ingress-nginx-controller"
+          }
         }
       ]
     }
