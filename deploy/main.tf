@@ -99,6 +99,8 @@ module "nginx" {
                 "use-http2"                 = "true"
                 "client-max-body-size"      = "50M"
                 "keep-alive"                = "3600"
+                "proxy-buffer-size"         = "500m"
+                "proxy-buffers-number"      = "8"
               }
             }
           ])
