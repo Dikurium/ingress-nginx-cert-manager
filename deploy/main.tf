@@ -97,6 +97,8 @@ module "nginx" {
               value = {
                 "allow-snippet-annotations" = "true"
                 "use-http2"                 = "true"
+                "client-max-body-size"      = "50M"
+                "keep-alive"                = "3600"
               }
             }
           ])
