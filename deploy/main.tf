@@ -115,7 +115,7 @@ module "nginx" {
 
 module "cert_manager" {
   source  = "kbst.xyz/catalog/cert-manager/kustomization"
-  version = "1.8.2-kbst.0"
+  version = "1.15.0-beta.2-kbst.0"
 
   configuration_base_key = terraform.workspace
   configuration = {
