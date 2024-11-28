@@ -95,9 +95,8 @@ module "nginx" {
               op   = "add"
               path = "/data"
               value = {
-                "allow-snippet-annotations"   = "true"
-                "use-http2"                   = "true"
-                "upstream-keepalive-requests" = "1"
+                "allow-snippet-annotations" = "true"
+                "use-http2"                 = "true"
               }
             }
           ])
