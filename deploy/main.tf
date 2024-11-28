@@ -49,7 +49,7 @@ provider "helm" {
 
 module "nginx" {
   source  = "kbst.xyz/catalog/nginx/kustomization"
-  version = "1.2.1-kbst.0"
+  version = "1.10.1-kbst.0"
 
   configuration_base_key = terraform.workspace
   configuration = {
