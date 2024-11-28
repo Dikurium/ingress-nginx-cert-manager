@@ -151,7 +151,7 @@ resource "helm_release" "cert_manager_csi" {
   namespace  = "cert-manager"
   repository = "https://charts.jetstack.io/"
   chart      = "cert-manager-csi-driver"
-  version    = "0.4.2"
+  version    = "0.10.1"
 
   values = [yamlencode({
     nodeSelector = {
