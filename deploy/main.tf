@@ -121,7 +121,8 @@ module "cert_manager" {
   configuration = {
     "${terraform.workspace}" = {
       additional_resources = [
-        "${path.root}/manifests/cluster-issuer.yaml",
+        "${path.root}/manifests/dik-cluster-issuer.yaml",
+        "${path.root}/manifests/ip-cluster-issuer.yaml",
         "${path.root}/manifests/fundp-cluster-issuer.yaml"
       ]
     }
