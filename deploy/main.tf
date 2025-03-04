@@ -123,7 +123,8 @@ module "cert_manager" {
       additional_resources = [
         "${path.root}/manifests/dik-cluster-issuer.yaml",
         "${path.root}/manifests/ip-cluster-issuer.yaml",
-        "${path.root}/manifests/fundp-cluster-issuer.yaml"
+        "${path.root}/manifests/fundp-cluster-issuer.yaml",
+        "${path.root}/manifests/finly-cluster-issuer.yaml",
       ]
     }
     ops = {
