@@ -126,6 +126,7 @@ module "cert_manager" {
         "${path.root}/manifests/fundp-cluster-issuer.yaml",
         "${path.root}/manifests/finly-cluster-issuer.yaml",
         "${path.root}/manifests/peerly-cluster-issuer.yaml",
+        "${path.root}/manifests/finpath-cluster-issuer.yaml",
       ]
     }
     ops = {
