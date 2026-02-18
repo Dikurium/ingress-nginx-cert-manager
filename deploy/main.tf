@@ -98,6 +98,23 @@ module "nginx" {
                 "allow-snippet-annotations" = "true"
                 "use-http2"                 = "true"
               }
+            },
+            {
+              op    = "add"
+              path  = "/data/http-snippet"
+              value = <<-EOF
+                # Drop LeakIX scanner globally
+                map $http_user_agent $block_leakix {
+                  default 0;
+                  ~*l9scan 1;
+                }
+
+                # Drop OPTIONS fuzzing like /?/?/?/
+                map "$request_method:$request_uri" $block_bad_options {
+                  default 0;
+                  ~^OPTIONS:/\\?/ 1;
+                }
+              EOF
             }
           ])
 
