@@ -115,7 +115,20 @@ module "nginx" {
                   ~^OPTIONS:/\\?/ 1;
                 }
               EOF
-            }
+            },
+            {
+              op    = "add"
+              path  = "/data/server-snippet"
+              value = <<-EOF
+                if ($block_leakix) {
+                  return 444;
+                }
+
+                if ($block_bad_options) {
+                  return 444;
+                }
+              EOF
+            },
           ])
 
           target = {
